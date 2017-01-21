@@ -17,11 +17,6 @@ public class AudioController : MonoBehaviour {
         spectrumData = new float[sampleSize];
         fSample = AudioSettings.outputSampleRate;
     }
-
-    private IEnumerator updatePitch() {
-        List<int> pitches = new ArrayList<int>();
-
-    }
 	
 	// Update is called once per frame
 	void FixedUpdate () {
