@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
 public class AudioController : MonoBehaviour {
 
     private AudioSource micAudio;
@@ -10,23 +11,32 @@ public class AudioController : MonoBehaviour {
     private float[] spectrumData;
     private float fSample;
 
+    public float averageTime;
+
+    List<float > pitches = new List<float>();
+
 	// Use this for initialization
 	void Start () {
         micAudio = GetComponent<AudioSource>();
         setUpMicrophone();
         spectrumData = new float[sampleSize];
         fSample = AudioSettings.outputSampleRate;
+
+        StartCoroutine(updatePitch());
     }
 
     private IEnumerator updatePitch() {
-        List<int> pitches = new ArrayList<int>();
-
+        while (true) {
+            pitches.Clear();
+            float currentTime = 0;
+            while (currentTime < averageTime) {
+                currentTime += Time.fixedDeltaTime;
+                pitches.Add(getPitch());
+                yield return null;
+            }
+            Debug.Log(pitches.Average());
+        }
     }
-	
-	// Update is called once per frame
-	void FixedUpdate () {
-        Debug.Log(getPitch());
-	}
 
     private void setUpMicrophone() {
         micAudio.clip = Microphone.Start("Built-in Mic", true, 10, 44100);
